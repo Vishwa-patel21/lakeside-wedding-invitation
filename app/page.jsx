@@ -4,14 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { weddingConfig } from "@/lib/config";
 
-function getWhatsAppUrl() {
-  const digits = weddingConfig.rsvp.phoneNumber.replace(/\D/g, "");
-  const text = encodeURIComponent(weddingConfig.rsvp.whatsappMessage);
-  return `https://wa.me/${digits}?text=${text}`;
-}
+function Icon({ name }) {
+  const paths = {
+    calendar: "M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z",
+    clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v5l3 2",
+    map: "M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+    heart: "M12 21s-7.5-4.5-9.4-9.1C.9 7.8 3.2 4 7 4c2 0 3.4 1 5 2.8C13.6 5 15 4 17 4c3.8 0 6.1 3.8 4.4 7.9C19.5 16.5 12 21 12 21Z",
+    camera: "M4 8h3l1.4-2h7.2L17 8h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2ZM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+  };
 
-function getPhoneUrl(phone) {
-  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+  return (
+    <svg className="icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d={paths[name]} />
+    </svg>
+  );
 }
 
 function Countdown() {
@@ -88,7 +94,7 @@ function RsvpForm() {
     }
 
     event.currentTarget.reset();
-    setStatus("Thank you. Your RSVP has been received.");
+    setStatus("Your response has been collected. Thank you.");
   }
 
   return (
@@ -131,18 +137,15 @@ export default function HomePage() {
             <span key={index} />
           ))}
         </div>
-        <button
-          className="letterInvite"
-          type="button"
-          onClick={() => setOpened(true)}
-          aria-label="Open wedding invitation"
-        >
-          <span className="letterFlap" />
-          <span className="letterCard">
-            <span className="letterSeal">{weddingConfig.couple.initials}</span>
-            <span className="letterTitle">Wedding Invitation</span>
-            <span className="letterHint">Tap to open</span>
+        <div className="curtain curtainLeft" aria-hidden="true" />
+        <div className="curtain curtainRight" aria-hidden="true" />
+        <button className="letterOpener" type="button" onClick={() => setOpened(true)}>
+          <span className="letterFold letterFoldTop" />
+          <span className="letterFold letterFoldBottom" />
+          <span className="heartStamp">
+            <Icon name="heart" />
           </span>
+          <span className="letterOpenText">Touch the heart to open</span>
         </button>
         <div className="heroContent">
           <div className="arch" aria-hidden="true" />
@@ -154,15 +157,17 @@ export default function HomePage() {
           </h1>
           <p className="heroMessage">{weddingConfig.invitation.message}</p>
           <div className="heroDetails">
-            <span>{weddingConfig.date.display}</span>
-            <span>{weddingConfig.date.time}</span>
-            <span>{weddingConfig.venue.name}</span>
+            <span><Icon name="calendar" /> {weddingConfig.date.display}</span>
+            <span><Icon name="clock" /> {weddingConfig.date.time}</span>
+            <a href={weddingConfig.venue.mapUrl} target="_blank" rel="noreferrer">
+              <Icon name="map" /> {weddingConfig.venue.name}
+            </a>
           </div>
           <div className="heroActions">
-            <a href="#rsvp">RSVP Now</a>
-            <a href="#couple">Couple Photos</a>
+            <a href="#rsvp">RSVP on Website</a>
+            <a href="#story">Our Story</a>
             <a href={weddingConfig.venue.mapUrl} target="_blank" rel="noreferrer">
-              View Map
+              Open Map
             </a>
           </div>
         </div>
@@ -171,25 +176,31 @@ export default function HomePage() {
       <section className="detailsBand">
         <div className="sectionInner threeColumns">
           <article>
+            <Icon name="calendar" />
             <span>Date</span>
             <strong>{weddingConfig.date.display}</strong>
           </article>
           <article>
+            <Icon name="clock" />
             <span>Time</span>
             <strong>{weddingConfig.date.time}</strong>
           </article>
           <article>
+            <Icon name="map" />
             <span>Venue</span>
             <strong>{weddingConfig.venue.name}</strong>
             <small>{weddingConfig.venue.line1}</small>
+            <a className="inlineMapLink" href={weddingConfig.venue.mapUrl} target="_blank" rel="noreferrer">
+              Open Google Maps
+            </a>
           </article>
         </div>
       </section>
 
-      <section className="sectionInner storySection">
+      <section className="sectionInner storySection" id="story">
         <div>
-          <p className="eyebrow">By the lake</p>
-          <h2>A golden lakeside celebration</h2>
+          <p className="eyebrow">Our story</p>
+          <h2>A little story of us</h2>
         </div>
         <p>{weddingConfig.couple.story}</p>
       </section>
@@ -197,16 +208,21 @@ export default function HomePage() {
       <section className="galleryBand" id="couple">
         <div className="sectionInner">
           <div className="sectionHeader">
-            <p className="eyebrow">Our moments</p>
-            <h2>Couple Photos</h2>
+            <p className="eyebrow">Photos</p>
+            <h2>Moments before the celebration</h2>
           </div>
           <div className="photoStrip">
             {weddingConfig.couple.photos.map((photo, index) => (
-              <figure key={photo.src} className={`couplePhoto photo${index + 1}`}>
-                <img src={photo.src} alt={photo.alt} />
-                <figcaption>
-                  {index === 0 ? "Before the vows" : index === 1 ? "Together forever" : "By the water"}
-                </figcaption>
+              <figure key={photo.title} className={`couplePhoto photo${index + 1}`}>
+                {photo.src ? (
+                  <img src={photo.src} alt={photo.alt} />
+                ) : (
+                  <div className="photoPlaceholder">
+                    <Icon name="camera" />
+                    <span>Add Couple Photo</span>
+                  </div>
+                )}
+                <figcaption>{photo.title}</figcaption>
               </figure>
             ))}
           </div>
@@ -237,48 +253,20 @@ export default function HomePage() {
         <Countdown />
       </section>
 
-      <section className="contactBand">
-        <div className="sectionInner">
-          <div className="sectionHeader">
-            <p className="eyebrow">Need help?</p>
-            <h2>Contact Information</h2>
-          </div>
-          <div className="contactGrid">
-            {weddingConfig.contacts.map((contact) => (
-              <article key={contact.role} className="contactCard">
-                <span>{contact.role}</span>
-                <strong>{contact.name}</strong>
-                <p>{contact.note}</p>
-                <div>
-                  <a href={getPhoneUrl(contact.phone)}>Call</a>
-                  <a
-                    href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    WhatsApp
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="rsvpBand" id="rsvp">
         <div className="sectionInner rsvpGrid">
           <div>
             <p className="eyebrow">Kindly reply</p>
-            <h2>RSVP by {weddingConfig.invitation.rsvpDeadline}</h2>
+            <h2>RSVP on this website</h2>
             <p>
-              Send your response here, or use WhatsApp if that is easier. Guest
-              photo uploads are available through the QR page after deployment.
+              Submit your response here and it will be saved for the family.
+              You can also use the photo page to share celebration photos.
             </p>
             <div className="rsvpLinks">
-              <a href={getWhatsAppUrl()} target="_blank" rel="noreferrer">
-                RSVP on WhatsApp
-              </a>
               <a href={weddingConfig.photos.uploadPath}>Guest Photo QR</a>
+              <a href={weddingConfig.venue.mapUrl} target="_blank" rel="noreferrer">
+                Venue Map
+              </a>
             </div>
           </div>
           <RsvpForm />

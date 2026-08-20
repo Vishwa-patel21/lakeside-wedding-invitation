@@ -38,6 +38,28 @@ textarea {
   font: inherit;
 }
 
+svg {
+  display: block;
+}
+
+.icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+button .icon,
+a .icon,
+.heroDetails .icon {
+  display: inline-block;
+  vertical-align: -4px;
+}
+
 .hero {
   min-height: 96vh;
   position: relative;
@@ -77,7 +99,7 @@ textarea {
   padding: 42px 0 18px;
   opacity: 0;
   transform: translateY(26px) scale(0.98);
-  transition: opacity 0.9s ease 0.55s, transform 0.9s ease 0.55s;
+  transition: opacity 0.9s ease 0.65s, transform 0.9s ease 0.65s;
 }
 
 .hero.isOpen .heroContent {
@@ -152,6 +174,7 @@ h2 {
 }
 
 .heroDetails span,
+.heroDetails a,
 .heroActions a,
 .rsvpLinks a,
 .contactCard a,
@@ -163,6 +186,13 @@ h2 {
   min-height: 44px;
   padding: 12px 18px;
   font-weight: 700;
+}
+
+.heroDetails span,
+.heroDetails a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .heroActions {
@@ -179,121 +209,136 @@ h2 {
   box-shadow: 0 14px 30px rgba(115, 86, 29, 0.24);
 }
 
-.letterInvite {
+.letterOpener {
   position: absolute;
   z-index: 7;
   display: grid;
   place-items: center;
-  width: min(430px, calc(100vw - 36px));
-  aspect-ratio: 1.35;
-  border: 0;
-  background: transparent;
+  width: min(410px, calc(100vw - 36px));
+  aspect-ratio: 1.42;
+  border: 1px solid rgba(115, 86, 29, 0.26);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, transparent 49.5%, rgba(115, 86, 29, 0.18) 50%, transparent 50.5%),
+    linear-gradient(35deg, transparent 49.5%, rgba(115, 86, 29, 0.14) 50%, transparent 50.5%),
+    linear-gradient(180deg, #fffdf8, #f1dfc1);
+  color: var(--pine);
   cursor: pointer;
-  transform-style: preserve-3d;
-  transition: opacity 0.55s ease 0.8s, transform 0.75s ease 0.8s, visibility 0.55s ease 0.8s;
+  box-shadow: 0 24px 60px rgba(47, 42, 37, 0.22);
+  overflow: hidden;
+  transition: opacity 0.45s ease 0.45s, transform 0.65s ease 0.45s, visibility 0.45s ease 0.45s;
 }
 
-.letterInvite::before,
-.letterInvite::after {
+.letterOpener::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 8px;
+  inset: 10px;
+  border: 1px solid rgba(179, 138, 53, 0.16);
+  border-radius: 6px;
 }
 
-.letterInvite::before {
-  background:
-    linear-gradient(145deg, transparent 49.5%, rgba(115, 86, 29, 0.22) 50%, transparent 50.5%),
-    linear-gradient(35deg, transparent 49.5%, rgba(115, 86, 29, 0.18) 50%, transparent 50.5%),
-    linear-gradient(180deg, #fffdf8, #f3e5cd);
-  border: 1px solid rgba(115, 86, 29, 0.28);
-  box-shadow: 0 30px 80px rgba(47, 42, 37, 0.26);
-}
-
-.letterInvite::after {
-  inset: auto 0 0;
-  height: 54%;
-  background: linear-gradient(145deg, #f7ead4, #fffaf0);
-  clip-path: polygon(0 0, 50% 68%, 100% 0, 100% 100%, 0 100%);
-}
-
-.letterFlap {
+.letterFold {
   position: absolute;
-  inset: 0;
-  z-index: 3;
-  background: linear-gradient(180deg, #fffaf0, #ecd7b7);
-  clip-path: polygon(0 0, 100% 0, 50% 58%);
-  transform-origin: top;
-  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  inset-inline: 0;
+  pointer-events: none;
 }
 
-.letterCard {
+.letterFoldTop {
+  top: 0;
+  height: 58%;
+  background: linear-gradient(180deg, #fffaf0, #ead4b1);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.letterFoldBottom {
+  bottom: 0;
+  height: 56%;
+  background: linear-gradient(145deg, #f4e5ca, #fffaf0);
+  clip-path: polygon(0 100%, 0 0, 50% 72%, 100% 0, 100% 100%);
+}
+
+.heartStamp {
   position: relative;
   z-index: 2;
   display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 12px;
-  width: 74%;
-  min-height: 76%;
-  padding: 30px 20px;
-  border: 1px solid rgba(179, 138, 53, 0.3);
-  border-radius: 8px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 250, 240, 0.96)),
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(179, 138, 53, 0.08) 26px 27px);
-  transform: translateY(16px);
-  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.letterSeal {
-  display: grid;
   place-items: center;
-  width: 72px;
+  width: 82px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e6c56b, var(--deep-gold));
+  background: radial-gradient(circle at 35% 28%, #edc979, var(--deep-gold));
   color: var(--white);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.25rem;
-  box-shadow: 0 12px 24px rgba(115, 86, 29, 0.28);
+  box-shadow: 0 12px 26px rgba(115, 86, 29, 0.28);
+  animation: heartPulse 1.8s ease-in-out infinite;
 }
 
-.letterTitle {
+.heartStamp .icon {
+  width: 36px;
+  height: 36px;
+  fill: rgba(255, 255, 255, 0.18);
+}
+
+.letterOpenText {
+  position: absolute;
+  z-index: 3;
+  bottom: 24px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.76);
   color: var(--pine);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.5rem, 5vw, 2.3rem);
-}
-
-.letterHint {
-  color: var(--deep-gold);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.letterInvite:hover .letterFlap,
-.letterInvite:focus-visible .letterFlap {
-  transform: rotateX(26deg);
+.letterOpener:hover,
+.letterOpener:focus-visible {
+  transform: translateY(-4px) scale(1.04);
 }
 
-.letterInvite:hover .letterCard,
-.letterInvite:focus-visible .letterCard {
-  transform: translateY(-10px);
+.letterOpener:hover .letterFoldTop,
+.letterOpener:focus-visible .letterFoldTop {
+  transform: rotateX(24deg);
 }
 
-.hero.isOpen .letterInvite {
+.hero.isOpen .letterOpener {
   opacity: 0;
-  transform: translateY(-46px) rotateX(22deg) scale(0.94);
+  transform: translateY(-34px) rotateX(20deg) scale(0.92);
   visibility: hidden;
 }
 
-.hero.isOpen .letterFlap {
+.hero.isOpen .letterFoldTop {
   transform: rotateX(150deg);
 }
 
-.hero.isOpen .letterCard {
-  transform: translateY(-96px);
+.curtain {
+  position: absolute;
+  inset-block: 0;
+  z-index: 6;
+  width: 50.5%;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 240, 0.58)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 18px, rgba(220, 207, 188, 0.22) 18px 22px);
+  backdrop-filter: blur(4px);
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.2, 1);
+}
+
+.curtainLeft {
+  left: 0;
+}
+
+.curtainRight {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.hero.isOpen .curtainLeft {
+  transform: translateX(-100%);
+}
+
+.hero.isOpen .curtainRight {
+  transform: translateX(100%) scaleX(-1);
 }
 
 .petals {
@@ -365,6 +410,18 @@ h2 {
   background: rgba(255, 255, 255, 0.54);
 }
 
+.threeColumns article {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.threeColumns article > .icon {
+  width: 24px;
+  height: 24px;
+  color: var(--deep-gold);
+}
+
 .threeColumns span,
 .timeline time,
 .countdownItem span {
@@ -390,6 +447,13 @@ h2 {
   display: block;
   margin-top: 10px;
   color: var(--muted);
+}
+
+.inlineMapLink {
+  width: max-content;
+  margin-top: 8px;
+  color: var(--deep-gold);
+  font-weight: 700;
 }
 
 .storySection,
@@ -448,6 +512,30 @@ h2 {
   box-shadow: 0 18px 42px rgba(47, 42, 37, 0.14);
   transform: rotate(-2deg);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.photoPlaceholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 250, 240, 0.92), rgba(127, 151, 124, 0.18)),
+    repeating-linear-gradient(45deg, rgba(179, 138, 53, 0.08) 0 12px, transparent 12px 24px);
+  color: var(--deep-gold);
+}
+
+.photoPlaceholder .icon {
+  width: 46px;
+  height: 46px;
+}
+
+.photoPlaceholder span {
+  color: var(--pine);
+  font-weight: 700;
 }
 
 .couplePhoto.photo2 {
@@ -701,6 +789,16 @@ footer strong {
   }
 }
 
+@keyframes heartPulse {
+  0%,
+  100% {
+    box-shadow: 0 24px 60px rgba(47, 42, 37, 0.22);
+  }
+  50% {
+    box-shadow: 0 28px 70px rgba(115, 86, 29, 0.34);
+  }
+}
+
 @media (max-width: 860px) {
   .threeColumns,
   .storySection,
@@ -734,11 +832,12 @@ footer strong {
     padding-inline: 18px;
   }
 
-  .letterInvite {
+  .letterOpener {
     width: calc(100vw - 32px);
   }
 
   .heroDetails span,
+  .heroDetails a,
   .heroActions a,
   .rsvpLinks a,
   .contactCard a {
