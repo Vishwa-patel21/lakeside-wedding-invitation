@@ -896,3 +896,54 @@ footer strong {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.simplePage {
+  min-height: 100vh;
+  background: var(--ivory);
+}
+
+.simpleHero {
+  min-height: 100vh;
+}
+
+.simpleHeroContent {
+  width: min(820px, 100%);
+}
+
+.simpleHero .heroActions {
+  justify-content: center;
+}
+
+.simpleRsvpSection {
+  padding: 72px 0;
+  background: var(--paper);
+}
+
+.simpleRsvpGrid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.simpleRsvpGrid > div > p {
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+.simpleRsvpForm {
+  max-width: 560px;
+  justify-self: end;
+}
+
+@media (max-width: 860px) {
+  .simpleRsvpGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .simpleRsvpForm {
+    max-width: none;
+    justify-self: stretch;
+  }
+}
