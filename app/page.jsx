@@ -79,6 +79,11 @@ function RsvpForm() {
       message: form.get("message")
     };
 
+    setStatus({
+      type: "notice",
+      text: "Saving your RSVP..."
+    });
+
     if (!isSupabaseConfigured) {
       setStatus({
         type: "notice",
@@ -88,22 +93,30 @@ function RsvpForm() {
     }
 
     setIsSubmitting(true);
-    const { error } = await supabase.from("rsvps").insert(payload);
-    setIsSubmitting(false);
+    try {
+      const { error } = await supabase.from("rsvps").insert(payload);
 
-    if (error) {
+      if (error) {
+        setStatus({
+          type: "error",
+          text: "Something went wrong. Please try again."
+        });
+        return;
+      }
+
+      event.currentTarget.reset();
+      setStatus({
+        type: "success",
+        text: "Your response has been saved. Thank you for celebrating with us."
+      });
+    } catch {
       setStatus({
         type: "error",
         text: "Something went wrong. Please try again."
       });
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    event.currentTarget.reset();
-    setStatus({
-      type: "success",
-      text: "Your response has been saved. Thank you for celebrating with us."
-    });
   }
 
   return (
@@ -127,13 +140,18 @@ function RsvpForm() {
         Message
         <textarea name="message" rows="3" placeholder="Meal notes or a sweet message" />
       </label>
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Send RSVP"}
-      </button>
       {status ? (
         <p className={`formStatus ${status.type}`} role="status" aria-live="polite">
           {status.text}
         </p>
+      ) : null}
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Sending..." : "Send RSVP"}
+      </button>
+      {status?.type === "success" ? (
+        <div className="successToast" role="status" aria-live="polite">
+          {status.text}
+        </div>
       ) : null}
     </form>
   );
