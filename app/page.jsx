@@ -66,7 +66,7 @@ function Countdown() {
 }
 
 function RsvpForm() {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event) {
@@ -80,7 +80,10 @@ function RsvpForm() {
     };
 
     if (!isSupabaseConfigured) {
-      setStatus("RSVP preview saved only after Supabase keys are added.");
+      setStatus({
+        type: "notice",
+        text: "RSVP preview only. Add Supabase keys to save responses."
+      });
       return;
     }
 
@@ -89,12 +92,18 @@ function RsvpForm() {
     setIsSubmitting(false);
 
     if (error) {
-      setStatus("Something went wrong. Please try WhatsApp instead.");
+      setStatus({
+        type: "error",
+        text: "Something went wrong. Please try again."
+      });
       return;
     }
 
     event.currentTarget.reset();
-    setStatus("Your response has been collected. Thank you.");
+    setStatus({
+      type: "success",
+      text: "Your response has been saved. Thank you for celebrating with us."
+    });
   }
 
   return (
@@ -121,7 +130,11 @@ function RsvpForm() {
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Sending..." : "Send RSVP"}
       </button>
-      {status ? <p className="formStatus">{status}</p> : null}
+      {status ? (
+        <p className={`formStatus ${status.type}`} role="status" aria-live="polite">
+          {status.text}
+        </p>
+      ) : null}
     </form>
   );
 }
