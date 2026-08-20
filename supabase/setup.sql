@@ -9,6 +9,9 @@ create table if not exists public.rsvps (
 
 alter table public.rsvps enable row level security;
 
+grant usage on schema public to anon, authenticated;
+grant insert on public.rsvps to anon, authenticated;
+
 drop policy if exists "Guests can submit rsvps" on public.rsvps;
 create policy "Guests can submit rsvps"
 on public.rsvps

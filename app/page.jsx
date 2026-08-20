@@ -99,7 +99,7 @@ function RsvpForm() {
       if (error) {
         setStatus({
           type: "error",
-          text: "Something went wrong. Please try again."
+          text: `RSVP could not be saved: ${error.message}`
         });
         return;
       }
@@ -112,7 +112,7 @@ function RsvpForm() {
     } catch {
       setStatus({
         type: "error",
-        text: "Something went wrong. Please try again."
+        text: "RSVP could not be saved. Please check the internet connection and try again."
       });
     } finally {
       setIsSubmitting(false);
