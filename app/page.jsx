@@ -10,6 +10,10 @@ function getWhatsAppUrl() {
   return `https://wa.me/${digits}?text=${text}`;
 }
 
+function getPhoneUrl(phone) {
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+}
+
 function Countdown() {
   const [now, setNow] = useState(null);
 
@@ -127,8 +131,19 @@ export default function HomePage() {
             <span key={index} />
           ))}
         </div>
-        <div className="curtain curtainLeft" aria-hidden="true" />
-        <div className="curtain curtainRight" aria-hidden="true" />
+        <button
+          className="letterInvite"
+          type="button"
+          onClick={() => setOpened(true)}
+          aria-label="Open wedding invitation"
+        >
+          <span className="letterFlap" />
+          <span className="letterCard">
+            <span className="letterSeal">{weddingConfig.couple.initials}</span>
+            <span className="letterTitle">Wedding Invitation</span>
+            <span className="letterHint">Tap to open</span>
+          </span>
+        </button>
         <div className="heroContent">
           <div className="arch" aria-hidden="true" />
           <p className="eyebrow">{weddingConfig.invitation.headline}</p>
@@ -145,16 +160,12 @@ export default function HomePage() {
           </div>
           <div className="heroActions">
             <a href="#rsvp">RSVP Now</a>
+            <a href="#couple">Couple Photos</a>
             <a href={weddingConfig.venue.mapUrl} target="_blank" rel="noreferrer">
               View Map
             </a>
           </div>
         </div>
-        {!opened ? (
-          <button className="openInvite" type="button" onClick={() => setOpened(true)}>
-            Open Invitation
-          </button>
-        ) : null}
       </section>
 
       <section className="detailsBand">
@@ -180,10 +191,26 @@ export default function HomePage() {
           <p className="eyebrow">By the lake</p>
           <h2>A golden lakeside celebration</h2>
         </div>
-        <p>
-          Join us for a warm, elegant afternoon near Ramsey Lake as we begin this
-          new chapter with family and friends.
-        </p>
+        <p>{weddingConfig.couple.story}</p>
+      </section>
+
+      <section className="galleryBand" id="couple">
+        <div className="sectionInner">
+          <div className="sectionHeader">
+            <p className="eyebrow">Our moments</p>
+            <h2>Couple Photos</h2>
+          </div>
+          <div className="photoStrip">
+            {weddingConfig.couple.photos.map((photo, index) => (
+              <figure key={photo.src} className={`couplePhoto photo${index + 1}`}>
+                <img src={photo.src} alt={photo.alt} />
+                <figcaption>
+                  {index === 0 ? "Before the vows" : index === 1 ? "Together forever" : "By the water"}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="timelineBand">
@@ -208,6 +235,34 @@ export default function HomePage() {
           <h2>Counting down to the celebration</h2>
         </div>
         <Countdown />
+      </section>
+
+      <section className="contactBand">
+        <div className="sectionInner">
+          <div className="sectionHeader">
+            <p className="eyebrow">Need help?</p>
+            <h2>Contact Information</h2>
+          </div>
+          <div className="contactGrid">
+            {weddingConfig.contacts.map((contact) => (
+              <article key={contact.role} className="contactCard">
+                <span>{contact.role}</span>
+                <strong>{contact.name}</strong>
+                <p>{contact.note}</p>
+                <div>
+                  <a href={getPhoneUrl(contact.phone)}>Call</a>
+                  <a
+                    href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    WhatsApp
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="rsvpBand" id="rsvp">

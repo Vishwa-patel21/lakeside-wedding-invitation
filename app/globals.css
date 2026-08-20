@@ -39,16 +39,16 @@ textarea {
 }
 
 .hero {
-  min-height: 94vh;
+  min-height: 96vh;
   position: relative;
   display: grid;
   place-items: center;
   overflow: hidden;
   padding: 80px 24px 56px;
+  perspective: 1400px;
   background:
-    linear-gradient(rgba(255, 250, 240, 0.55), rgba(255, 250, 240, 0.8)),
-    radial-gradient(circle at 20% 20%, rgba(201, 133, 133, 0.24), transparent 30%),
-    linear-gradient(135deg, rgba(127, 151, 124, 0.72), rgba(255, 250, 240, 0.9) 55%, rgba(179, 138, 53, 0.24)),
+    linear-gradient(rgba(255, 250, 240, 0.42), rgba(255, 250, 240, 0.84)),
+    linear-gradient(135deg, rgba(127, 151, 124, 0.72), rgba(255, 250, 240, 0.74) 52%, rgba(201, 133, 133, 0.22)),
     url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80");
   background-size: cover;
   background-position: center;
@@ -76,8 +76,13 @@ textarea {
   text-align: center;
   padding: 42px 0 18px;
   opacity: 0;
-  transform: translateY(18px);
-  animation: revealHero 1s ease forwards 0.5s;
+  transform: translateY(26px) scale(0.98);
+  transition: opacity 0.9s ease 0.55s, transform 0.9s ease 0.55s;
+}
+
+.hero.isOpen .heroContent {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .arch {
@@ -149,7 +154,7 @@ h2 {
 .heroDetails span,
 .heroActions a,
 .rsvpLinks a,
-.openInvite,
+.contactCard a,
 .rsvpForm button {
   border: 1px solid rgba(115, 86, 29, 0.3);
   border-radius: 999px;
@@ -166,47 +171,129 @@ h2 {
 
 .heroActions a:first-child,
 .rsvpLinks a:first-child,
-.rsvpForm button,
-.openInvite {
+.contactCard a:first-child,
+.rsvpForm button {
   background: var(--deep-gold);
   color: var(--white);
   border-color: var(--deep-gold);
   box-shadow: 0 14px 30px rgba(115, 86, 29, 0.24);
 }
 
-.openInvite {
+.letterInvite {
   position: absolute;
-  z-index: 6;
-  bottom: 42px;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  width: min(430px, calc(100vw - 36px));
+  aspect-ratio: 1.35;
+  border: 0;
+  background: transparent;
   cursor: pointer;
+  transform-style: preserve-3d;
+  transition: opacity 0.55s ease 0.8s, transform 0.75s ease 0.8s, visibility 0.55s ease 0.8s;
 }
 
-.curtain {
+.letterInvite::before,
+.letterInvite::after {
+  content: "";
   position: absolute;
-  inset-block: 0;
-  z-index: 5;
-  width: 50.5%;
+  inset: 0;
+  border-radius: 8px;
+}
+
+.letterInvite::before {
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 240, 0.58)),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0 18px, rgba(220, 207, 188, 0.24) 18px 22px);
-  transition: transform 1.35s cubic-bezier(0.65, 0, 0.2, 1);
+    linear-gradient(145deg, transparent 49.5%, rgba(115, 86, 29, 0.22) 50%, transparent 50.5%),
+    linear-gradient(35deg, transparent 49.5%, rgba(115, 86, 29, 0.18) 50%, transparent 50.5%),
+    linear-gradient(180deg, #fffdf8, #f3e5cd);
+  border: 1px solid rgba(115, 86, 29, 0.28);
+  box-shadow: 0 30px 80px rgba(47, 42, 37, 0.26);
 }
 
-.curtainLeft {
-  left: 0;
+.letterInvite::after {
+  inset: auto 0 0;
+  height: 54%;
+  background: linear-gradient(145deg, #f7ead4, #fffaf0);
+  clip-path: polygon(0 0, 50% 68%, 100% 0, 100% 100%, 0 100%);
 }
 
-.curtainRight {
-  right: 0;
-  transform: scaleX(-1);
+.letterFlap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(180deg, #fffaf0, #ecd7b7);
+  clip-path: polygon(0 0, 100% 0, 50% 58%);
+  transform-origin: top;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.hero.isOpen .curtainLeft {
-  transform: translateX(-100%);
+.letterCard {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  width: 74%;
+  min-height: 76%;
+  padding: 30px 20px;
+  border: 1px solid rgba(179, 138, 53, 0.3);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 250, 240, 0.96)),
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(179, 138, 53, 0.08) 26px 27px);
+  transform: translateY(16px);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.hero.isOpen .curtainRight {
-  transform: translateX(100%) scaleX(-1);
+.letterSeal {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e6c56b, var(--deep-gold));
+  color: var(--white);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  box-shadow: 0 12px 24px rgba(115, 86, 29, 0.28);
+}
+
+.letterTitle {
+  color: var(--pine);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 5vw, 2.3rem);
+}
+
+.letterHint {
+  color: var(--deep-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.letterInvite:hover .letterFlap,
+.letterInvite:focus-visible .letterFlap {
+  transform: rotateX(26deg);
+}
+
+.letterInvite:hover .letterCard,
+.letterInvite:focus-visible .letterCard {
+  transform: translateY(-10px);
+}
+
+.hero.isOpen .letterInvite {
+  opacity: 0;
+  transform: translateY(-46px) rotateX(22deg) scale(0.94);
+  visibility: hidden;
+}
+
+.hero.isOpen .letterFlap {
+  transform: rotateX(150deg);
+}
+
+.hero.isOpen .letterCard {
+  transform: translateY(-96px);
 }
 
 .petals {
@@ -251,7 +338,9 @@ h2 {
 }
 
 .detailsBand,
+.galleryBand,
 .timelineBand,
+.contactBand,
 .rsvpBand {
   padding: 72px 0;
 }
@@ -321,10 +410,76 @@ h2 {
 
 .storySection > p,
 .rsvpGrid > div > p,
+.contactCard p,
 .photoHero p {
   color: var(--muted);
   font-size: 1.08rem;
   line-height: 1.8;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.galleryBand {
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(255, 250, 240, 0.92), rgba(247, 239, 225, 0.96)),
+    linear-gradient(135deg, rgba(179, 138, 53, 0.12), rgba(127, 151, 124, 0.16));
+}
+
+.photoStrip {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.couplePhoto {
+  position: relative;
+  margin: 0;
+  min-height: 420px;
+  overflow: hidden;
+  border: 10px solid var(--white);
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: 0 18px 42px rgba(47, 42, 37, 0.14);
+  transform: rotate(-2deg);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.couplePhoto.photo2 {
+  min-height: 500px;
+  transform: translateY(-18px);
+}
+
+.couplePhoto.photo3 {
+  transform: rotate(2deg);
+}
+
+.couplePhoto:hover {
+  transform: translateY(-10px) rotate(0deg);
+  box-shadow: 0 28px 60px rgba(47, 42, 37, 0.18);
+}
+
+.couplePhoto img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  display: block;
+  object-fit: cover;
+}
+
+.couplePhoto figcaption {
+  position: absolute;
+  inset: auto 14px 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.9);
+  color: var(--pine);
+  font-weight: 700;
 }
 
 .timelineBand {
@@ -374,6 +529,49 @@ h2 {
   color: var(--deep-gold);
   font-size: clamp(2rem, 4vw, 3.5rem);
   line-height: 1;
+}
+
+.contactBand {
+  background: linear-gradient(180deg, var(--ivory), rgba(127, 151, 124, 0.14));
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.contactCard {
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid rgba(115, 86, 29, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.contactCard span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.contactCard strong {
+  color: var(--pine);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.contactCard p {
+  margin: 0;
+}
+
+.contactCard div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .rsvpBand {
@@ -508,7 +706,9 @@ footer strong {
   .storySection,
   .countdownSection,
   .rsvpGrid,
-  .photoHero {
+  .photoHero,
+  .photoStrip,
+  .contactGrid {
     grid-template-columns: 1fr;
   }
 
@@ -519,6 +719,13 @@ footer strong {
   .countdown {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .couplePhoto,
+  .couplePhoto.photo2,
+  .couplePhoto.photo3 {
+    min-height: 340px;
+    transform: none;
+  }
 }
 
 @media (max-width: 540px) {
@@ -527,9 +734,14 @@ footer strong {
     padding-inline: 18px;
   }
 
+  .letterInvite {
+    width: calc(100vw - 32px);
+  }
+
   .heroDetails span,
   .heroActions a,
-  .rsvpLinks a {
+  .rsvpLinks a,
+  .contactCard a {
     width: 100%;
     text-align: center;
   }
