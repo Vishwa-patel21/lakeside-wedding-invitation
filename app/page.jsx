@@ -71,7 +71,8 @@ function RsvpForm() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const payload = {
       name: form.get("name"),
       attending: form.get("attending"),
@@ -104,7 +105,7 @@ function RsvpForm() {
         return;
       }
 
-      event.currentTarget.reset();
+      formElement.reset();
       setStatus({
         type: "success",
         text: "Your response has been saved. Thank you for celebrating with us."
